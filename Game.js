@@ -72,7 +72,7 @@ export class Game {
     this._wormsBase = this.worms.map(w => ({ x: w.x, y: w.y, w: w.w, h: w.h }));
 
     // Финиш — зона в конце уровня
-    this.finish = { x: 2450, y: 505, w: 100, h: 80 };
+    this.finish = { x: 2420, y: 480, w: 160, h: 120 };
 
     this._bindUI();
     this._setupCharSelect();
@@ -103,6 +103,7 @@ export class Game {
       card.classList.add('selected');
       this.selectedChar = card.dataset.char;
       this.player.setImages(this._charImgs(this.selectedChar));
+      this._applyCharStats();
       this._drawCharPreviews();
       this._updateShootBtn();
     };
@@ -225,6 +226,17 @@ export class Game {
     });
   }
 
+  _applyCharStats() {
+    // Андрэ быстрее остальных
+    if (this.selectedChar === 'secret2') {
+      this.player.speed = 300;
+      this.player.jumpForce = -620;
+    } else {
+      this.player.speed = 230;
+      this.player.jumpForce = -580;
+    }
+  }
+
   _updateShootBtn() {
     const btn = document.getElementById('btn-shoot');
     if (!btn) return;
@@ -331,6 +343,7 @@ export class Game {
   _resetLevel() {
     this.player.reset();
     this.player.setImages(this._charImgs(this.selectedChar || 'pten1'));
+    this._applyCharStats();
     this.wormsCollected = 0;
     this.time = 0;
     this.camX = 0;
@@ -446,11 +459,11 @@ export class Game {
       }
     }
 
-    // Андрэ: притяжение червяков
+    // Андрэ: притяжение + автосбор червяков
     if (this.selectedChar === 'secret2') {
       const px = this.player.x + this.player.w / 2;
       const py = this.player.y + this.player.h / 2;
-      const range = 220;
+      const range = 350;
       for (const w of this.worms) {
         if (w.collected) continue;
         const wx = w.x + w.w / 2;
@@ -458,8 +471,15 @@ export class Game {
         const dx = px - wx;
         const dy = py - wy;
         const dist = Math.hypot(dx, dy);
+        // очень близко — сразу собрать (магнит не «теряет» червяка)
+        if (dist < 80) {
+          w.collected = true;
+          this.wormsCollected++;
+          this._updateHUD();
+          continue;
+        }
         if (dist < range && dist > 1) {
-          const pull = (1 - dist / range) * 280 * dt;
+          const pull = (1 - dist / range) * 700 * dt;
           w.x += (dx / dist) * pull;
           w.y += (dy / dist) * pull;
         }
@@ -484,6 +504,20 @@ export class Game {
     }
 
     // победа: все червяки + финиш
+    // Андрэ: у финиша добираем оставшихся червяков поблизости (магнит мог отставать)
+    if (aabb(this.player, this.finish) && this.selectedChar === 'secret2') {
+      const px = this.player.x + this.player.w / 2;
+      const py = this.player.y + this.player.h / 2;
+      for (const w of this.worms) {
+        if (w.collected) continue;
+        const dist = Math.hypot(px - (w.x + w.w / 2), py - (w.y + w.h / 2));
+        if (dist < 400) {
+          w.collected = true;
+          this.wormsCollected++;
+        }
+      }
+      this._updateHUD();
+    }
     if (this.wormsCollected >= 5 && aabb(this.player, this.finish)) {
       this._win();
     }
