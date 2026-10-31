@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ДЖАПМЕРЫ</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <header>
+      <h1>ДЖАПМЕРЫ</h1>
+      <div id="hud">
+        <span id="worms">ЧЕРВЯКИ: 0/5</span>
+        <span id="timer">ВРЕМЯ: 0.0</span>
+        <span id="best" title="Нажми, чтобы сбросить рекорд">РЕКОРД: --</span>
+        <span id="status">ВЫБОР</span>
+      </div>
+    </header>
+
+    <div id="canvas-wrap">
+      <canvas id="gameCanvas" width="1280" height="640"></canvas>
+    </div>
+
+    <div id="controls-hint">
+      <p>← → / A D — ходить · Space / W / ↑ — прыжок<br><strong>E</strong> / <strong>F</strong> — стрелять (Андрэ: ломает let, притягивает червяков)</p>
+    </div>
+
+    <div id="mobile-controls">
+      <button id="btn-left" class="mobile-btn" type="button">◀</button>
+      <button id="btn-right" class="mobile-btn" type="button">▶</button>
+      <button id="btn-jump" class="mobile-btn jump" type="button">▲</button>
+      <button id="btn-shoot" class="mobile-btn shoot hidden" type="button">✦</button>
+    </div>
+
+    <div id="buttons">
+      <button id="btn-start" type="button">СТАРТ</button>
+      <button id="btn-pause" type="button" disabled>ПАУЗА</button>
+      <button id="btn-restart" type="button">ЗАНОВО</button>
+    </div>
+
+    <!-- Выбор персонажа -->
+    <div id="char-select" class="overlay-panel">
+      <h2>выбери своего -джампера-</h2>
+      <div id="char-cards">
+        <div class="char-card" data-char="pten1" role="button" tabindex="0">
+          <canvas class="char-preview" width="120" height="100" data-char="pten1"></canvas>
+          <span>птен</span>
+        </div>
+        <div class="char-card" data-char="pten2" role="button" tabindex="0">
+          <canvas class="char-preview" width="120" height="100" data-char="pten2"></canvas>
+          <span>леон</span>
+        </div>
+        <div class="char-card" data-char="pten3" role="button" tabindex="0">
+          <canvas class="char-preview" width="120" height="100" data-char="pten3"></canvas>
+          <span>нерд</span>
+        </div>
+        <div class="char-card secret locked" data-char="secret1" role="button" tabindex="0" hidden>
+          <canvas class="char-preview" width="120" height="100" data-char="secret1"></canvas>
+          <span>✦ мявк</span>
+        </div>
+        <div class="char-card secret locked" data-char="secret2" role="button" tabindex="0" hidden>
+          <canvas class="char-preview" width="120" height="100" data-char="secret2"></canvas>
+          <span>✦ андрэ</span>
+        </div>
+        <div class="char-card secret locked" data-char="secret3" role="button" tabindex="0" hidden>
+          <canvas class="char-preview" width="120" height="100" data-char="secret3"></canvas>
+          <span>✦ зибзибиди</span>
+        </div>
+      </div>
+      <p class="hint">Нажми на персонажа, затем «Играть»<br><span id="secret-hint">Первая победа / новый рекорд / каждые 3 победы — рулетка!</span></p>
+      <button id="btn-select-play" type="button">ИГРАТЬ :D</button>
+    </div>
+
+    <div id="overlay" class="hidden">
+      <div id="overlay-content">
+        <h2 id="overlay-title">УРААА ПОБЕДА!</h2>
+        <p id="overlay-message"></p>
+        <button id="overlay-restart" type="button">ИГРАТЬ СНОВА</button>
+      </div>
+    </div>
+
+    <div id="roulette" class="hidden">
+      <div id="roulette-content">
+        <h2 id="roulette-title">РУЛЕТКА</h2>
+        <p class="roulette-sub">Секретные джамперы</p>
+        <div id="roulette-track-wrap">
+          <div id="roulette-pointer"></div>
+          <div id="roulette-track">
+            <div id="roulette-strip"></div>
+          </div>
+        </div>
+        <p id="roulette-result"></p>
+        <button id="roulette-ok" type="button" class="hidden">КРУТО!</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
